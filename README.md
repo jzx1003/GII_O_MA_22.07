@@ -20,6 +20,8 @@ Este proyecto se ha presentado como **Trabajo de Fin de Grado en la Universidad 
 
 **Para entrenar los modelos solo hay que ejecutar el fichero _Predicciones.ipynb_ entero.**
 
+**IMPORTANTE: Modificar la ruta de la celda que importa los datos, tiene ruta absoluta puesta**
+
 -----
 
 #### Autor: Junhao Zhou
