@@ -1,0 +1,37 @@
+\apendice{Documentación de usuario}
+
+\section{Introducción}
+
+En este apartado se va a explicar cómo ejecutar el código para entrenar los modelos desarrollados durante el proyecto.
+
+\section{Requisitos de usuarios}
+
+Los requisitos que necesita cumplir el usuario son los siguientes:
+
+\begin{itemize}
+    \item 850MB de espacio en el disco duro
+    \item Python 3.10.9
+    \item Anaconda
+\end{itemize}
+
+Se puede encontrar información de cómo instalar Anaconda en su página web~\cite{anaconda}.
+
+\section{Instalación}
+
+Para instalar el código del proyecto, podemos hacerlo desde la siguiente página citada~\cite{github:repo}. Para descargar la carpeta pulsamos el botón \textit{Code} y a continuación pulsamos \textit{Download ZIP}. En la siguiente figura~\ref{fig:github_descarga} podemos ver la ubicación de los botones.
+
+\imagen{github_descarga}{Botones para descargar el repositorio}{1}
+
+\section{Manual del usuario}
+
+Para ejecutar el código que entrena los modelos debemos seguir los siguientes pasos:
+
+\begin{itemize}
+    \item Abrimos el fichero \texttt{Predicciones.ipynb}.
+    \item Modificamos en la celda de <<Importación y preparación del conjunto de datos>> la ruta de la variable <<path>> para que lea el fichero CSV que contenga los datos que queramos emplear.
+    \item Ejecutamos todas las celdas del fichero.
+\end{itemize}
+
+A continuación, tras esperar a que se entrenen los modelos, podemos ver en las celdas de rendimiento el error devuelto por cada modelo de forma gráfica y numérica.
+
+Si queremos modificar los modelos, se recomienda leer la documentación técnica de programación~\ref{Documentacion_programacion}, que explica más a detalle el funcionamiento y cómo modificar distintas partes del código.

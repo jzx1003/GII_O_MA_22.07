@@ -1,0 +1,33 @@
+\capitulo{7}{Conclusiones y Líneas de trabajo futuras}
+
+A continuación se comentarán las conclusiones obtenidas del desarrollo de este proyecto y qué líneas de trabajo se pueden extraer de este para el futuro.
+
+\section{Conclusiones}
+
+Podemos concluir que, como proyecto, se han cumplido los objetivos propuestos al inicio de este. Siguiendo el modelo CRISP-DM, hemos sido capaces de desarrollar múltiples modelos de redes neuronales para la predicción de series temporales y analizar y compararlas entre sí, lo que nos ha permitido visualizar y comprender los modelos más útiles a la hora de realizar este tipo de predicciones.
+
+\par
+
+Además, a pesar que el conjunto de datos empleado para este proyecto no es público y es distinto de los demás proyectos que podemos encontrar en Internet, aún podemos comparar el rendimiento de los modelos entrenados por nosotros con los modelos entrenados por otros usuarios debido a que la métrica empleada para evaluar los modelos suele ser común.
+
+\par
+
+Además cabe recalcar, que las predicciones se han realizado sobre uno de los sensores únicamente, pero si introducimos como datos de entrada los de otros sensores, tendríamos que realizar todos los pasos del apartado 
+
+\par
+
+Podemos observar tanto en el modelo de ejemplo entrenado en MATLAB y en múltiples ejemplos de Internet, como los proporcionados por TensorFlow o Keras, que nuestro modelo con mejores resultados tiene una precisión bastante buena. El modelo LSTM publicado en la web de Keras como tutorial~\cite{keras:tutorial} tiene un MSE de 0.14 para el conjunto de validación. Los modelos del tutorial de TensorFlow~\cite{tensorflow:tutorial} emplean la métrica MAE, pero su equivalente en MSE es aproximadamente 0.08 para los valores con mayor precisión.
+
+\par
+
+Por último, también se ha cumplido con el objetivo de aprender acerca de la importancia del tratamiento de los datos previo a la creación y al entrenamiento de los modelos para reducir el error, el empleo y el funcionamiento de múltiples modelos para las predicciones de series temporales, y la importancia y el uso de las predicciones de series temporales en un ámbito real.
+
+\section{Lineas de trabajo futuras}
+
+Tras ver que los modelos creados y entrenados por nosotros disponen de un margen de mejora en las predicciones y que hay muchas opciones por las cuales se podría expandir este proyecto, a continuación se van a proponer unas líneas de trabajo para futuros proyectos relacionados con este:
+
+\begin{itemize}
+    \item Una expansión del análisis de modelos de predicciones de múltiples pasos con mayor complejidad. Se podría expandir la comparación de los modelos empleados desarrollando y entrenando modelos más complejos para ver su precisión y compararlos con los ya desarrollados.
+    \item Modificación en las predicciones a realizar. Se podrían modificar las secciones de datos para realizar predicciones con una mayor cantidad de datos introducidos como entrada o aumentar los pasos de tiempo que se quieren predecir, por ejemplo, para realizar predicciones de 48 horas futuras.
+    \item Adición de variables para realizar predicciones más precisas. Se puede realizar un proyecto donde las predicciones se realicen con una mayor cantidad de factores, como la composición del suelo donde se han desplegado los sensores, lo que nos permitiría aumentar la precisión de las predicciones.
+\end{itemize}

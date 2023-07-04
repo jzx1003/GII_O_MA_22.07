@@ -1,0 +1,133 @@
+\setcounter{secnumdepth}{4}
+
+\capitulo{3}{Conceptos teóricos}
+
+\section{Minería de datos}
+
+La minería de datos \cite{amazon:datamining} consiste en la aplicación de distintas técnicas, como inteligencia artificial o estadística, sobre grandes cantidades de datos con el objetivo de descubrir tendencias, patrones o relaciones ocultas.
+
+\par
+
+Si bien la minería de datos no es una técnica nueva, su relevancia ha aumentado significativamente en la época actual. Esto se debe al enorme incremento en la cantidad de datos que se generan cada día y al bajo número de analistas de datos. Debido a lo mencionado anteriormente y a que solo un pequeño porcentaje de los datos tiene un uso, la minería de datos cada vez es más importante en todos los ámbitos.
+
+\par
+
+La minería de datos consta de varios procesos para la realización de esta, pero una de las más conocidas es el modelo CRISP-DM~\cite{ibm:crisp-dm}. Este modelo consta de seis fases (ver Figura~\ref{fig:crisp_process}):
+
+\begin{enumerate}
+    \item Comprensión del negocio: se refiere a comprender los objetivos y los requisitos del proyecto.
+    \item Compresión de los datos: esta fase está comprendida por varias tareas, que son la recopilación de los datos iniciales, la exploración de estos y la verificación de calidad de los datos.
+    \item Preparación de los datos: en esta fase hay que resolver los problemas detectados en la fase anterior y mejorar el conjunto de datos.
+    \item Modelado: en esta fase se seleccionan las técnicas que se van a emplear para la creación de los modelos y se genera un plan de pruebas.
+    \item Evaluación: en esta fase se evalúan los modelos creados en la fase anterior y se escogen los más adecuados para el proyecto.
+    \item Despliegue: en esta última fase se despliega o despliegan los modelos seleccionados para poder realizar predicciones sobre otro conjunto de datos.
+\end{enumerate}
+
+\imagen{crisp_process}{Fases del modelo CRISP-DM~\cite{imagen:crisp}}{0.7}
+
+\section{Preprocesamiento de datos}
+
+El preprocesamiento de datos~\cite{preprocesamiento} es una tarea fundamental en la minería de datos que nos permite obtener un formato a partir del cual podamos trabajar. Esta tarea se compone de múltiples procesos para la mejora y la limpieza del conjunto de datos. Algunos de los más importantes son el tratamiento de valores faltantes, la eliminación de datos duplicados y la eliminación de datos que se puedan considerar <<ruido>>.
+
+\section{Normalización}
+
+La normalización es un proceso que consiste en transformar los valores numéricos de una o más columnas para que estos valores se ajusten a una escala común con la finalidad de poder realizar comparaciones con distintos atributos con una unidad distinta y/o una escala distinta.
+
+\par
+
+La normalización consta de varias técnicas, las empleadas en este trabajo han sido la normalización Min-Max~\cite{normalización:minmax} y la puntuación estándar o puntuación Z~\cite{normalización:estandar}.
+
+\par
+
+La normalización Min-Max transforma todos los valores numéricos para que se encuentren dentro del rango [0\,,\,1]. Una desventaja de esta técnica es su sensibilidad a los valores extremos, lo que requiere un preprocesamiento de datos antes de aplicarla.
+
+\[x_{\text{minmax}} = \frac{{x - x_{\text{min}}}}{{x_{\text{max}} - x_{\text{min}}}}\]
+
+\par
+
+La puntuación Z o puntuación estándar transforma los valores numéricos para que se encuentren en un rango no fijo que varía según la desviación estándar y la media. Esta técnica presenta una menor sensibilidad a los valores extremos, sin embargo, al realizar la normalización con esta técnica, cada columna tendrá un rango diferente debido a la falta de un rango fijo.
+
+\[x_{\text{standard}} = \frac{{x - \text{mean}(x)}}{{\text{standard deviation}(x)}}\]
+
+\section{Data windowing}
+
+El \textit{data windowing}~\cite{datawindowing} es una técnica que consiste en dividir el conjunto de datos en subsecciones. Esta técnica se emplea principalmente para series temporales y sirve para definir dentro de cada subsección los datos que se proporcionan a la red neuronal y los datos que se quieren predecir.
+
+\par
+
+En el \textit{machine learning} tradicional, una mayor cantidad de datos tiende a producir mejores resultados, pero en el caso de las series temporales puede no ser así, por lo que esta técnica se suele emplear para optimizar los resultados en las predicciones de series temporales.
+
+\imagen{windowing1}{Ejemplo de \textit{data windowing} de 6 datos proporcionados y 1 dato a predecir~\cite{imagen:data-windowing}}{0.6}
+
+\imagen{windowing2}{Representaciones gráficas del ejemplo de \textit{data windowing}~\ref{fig:windowing1}}{0.9}
+
+\section{Baseline}
+
+El \textit{baseline} es un modelo de predicción que sirve como comparación con otros futuros modelos, pues no se entrena y es el más simple. Sus predicciones se basan en que la variable a predecir en un momento dado es igual que en el momento anterior. Para calcular algunas variables como la temperatura es una base razonable, ya que no varía rápidamente.
+
+\section{Modelo lineal}
+
+El modelo lineal es un modelo de predicción basado en la regresión lineal, un método de aprendizaje supervisado que se caracteriza por ser uno de los modelos más sencillos para realizar predicciones, ya que consta de únicamente una capa intermedia entre los datos de entrada y salida. Esta capa realiza una transformación lineal de los datos de entrada.
+
+\section{Redes Neuronales Convolucionales}
+
+Las Redes Neuronales Convolucionales o CNN~\cite{cnn} por sus siglas en inglés son un tipo de redes neuronales artificiales cuyo uso principal se centra en el análisis de datos con una estructura de malla, como las imágenes. Aunque su uso más común sea para reconocimiento y clasificación de imágenes y vídeos, también se pueden usar para las predicciones de series temporales.
+
+\par
+
+Estas redes neuronales están compuestas por tres tipos principales de capas:
+\begin{itemize}
+    \item Capa convolucional. 
+    \item Capa de reducción de muestreo.
+    \item Capa de clasificación.
+\end{itemize}
+
+La capa convolucional es la capa más importante de una red neuronal CNN, puesto que es donde ocurre la mayor parte de la computación. Esta capa se encarga de transformar los datos de entrada en una matriz bidimensional para la siguiente capa. Esa capa requiere de datos de entrada y de un filtro para poder funcionar correctamente y devuelve como salida un mapa de características. El filtro o detector de características, se moverá a través de los campos de la entrada, verificando si la característica está presente. Este proceso se conoce como convolución.
+
+\par
+
+El filtro es una matriz bidimensional de pesos, que representa parte de la entrada. El tamaño del filtro puede variar dependiendo del tamaño que deseemos para el campo receptivo. El filtro se aplica a un determinado área de la entrada y realiza un producto escalar entre la entrada y el filtro, este producto escalar se almacena en una matriz de salida. Tras haber realizado el producto escalar y almacenarlo, el filtro se desplaza por la entrada y repite el proceso hasta haber recorrido todos los datos de entrada. El conjunto de productos escalares almacenados en la matriz de salida se conoce como mapa de características.
+
+\par
+
+Tras cada operación de convolución, la red neuronal aplica una transformación de unidad lineal rectificada (ReLU) al mapa de características, lo que añade la no linealidad del modelo.
+
+\par
+
+La capa de reducción de muestreo tiene la función de reducir el número de parámetros de los datos de entrada para la siguiente capa. De una manera similar a la capa convolucional, la reducción de muestreo se realiza mediante la pasada de un filtro a través de los datos de entrada. Los dos principales tipos de reducción de muestreo (ver Figura~\ref{fig:pooling}) son los siguientes:
+\begin{itemize}
+    \item \textit{Max pooling}: Este tipo de reducción mueve el filtro a través de toda la matriz bidimensional devuelta por la capa convolucional y devuelve a la matriz de salida el valor más alto encontrado en esa instancia. Este tipo de reducción de muestreo es la más empleada de las dos.
+    \item \textit{Average pooling}: Este tipo de reducción mueve el filtro a través de toda la matriz bidimensional devuelta por la capa convolucional y devuelve a la matriz de salida el valor medio de todos los valores que posea el filtro en esa instancia.
+\end{itemize}
+
+\imagen{pooling}{Ejemplo de los dos tipos de reducción de muestreo~\cite{imagen:reduccion}}{0.6}
+
+Por último, la capa de clasificación realiza una clasificación según las características obtenidas en la fase anterior.
+
+\par
+
+Aunque las redes neuronales convolucionales se componen de estas capas principalmente, sería en el caso de reconocimiento y clasificación de imágenes y vídeos. En el caso de una predicción en una serie temporal, la composición de capas varía un poco, más adelante se explicará la composición de las capas empleadas para este último caso.
+
+\section{\textit{Long short-term memory}}
+
+Las redes \textit{Long short-term memory} (LSTM)~\cite{lstm} son un tipo de redes neuronales artificiales que están dentro del grupo de redes neuronales recurrentes. Las redes neuronales recurrentes se distinguen de las clásicas por su capacidad para <<recordar>> estados previos introduciendo bucles en el diagrama de la red.
+
+\par
+
+Las redes LSTM disponen de una <<memoria a largo plazo>> y de una <<memoria a corto plazo>>, a diferencia de las redes neuronales recurrentes estándar, que solo son capaces de disponer de una <<memoria a corto plazo>>. Por este motivo, son unas redes ideales para realizar predicciones de series temporales, puesto que la <<memoria a corto plazo>> ayuda a comprender y predecir los siguientes pasos de tiempo, en este caso, las siguientes horas, y la <<memoria a largo plazo>> nos ayuda a predecir las tendencias diarias o estacionales de los atributos.
+
+\par
+
+Una unidad LSTM está compuesta por una célula, una puerta de entrada, una puerta de salida y una puerta de <<olvido>>, como una red neuronal recurrente. La diferencia entre el modelo LSTM y un modelo RNN genérico se encuentra dentro de la célula, donde se encuentra el algoritmo de <<olvido>>.
+
+\par
+
+En un modelo RNN genérico, el algoritmo de conservación de información está compuesto por una sola capa sigmoidal (ver Figura~\ref{fig:RNN_Cell}), lo que determina si la información se mantiene o se <<olvida>>. 
+
+\imagen{RNN_Cell}{Interior de una célula RNN~\cite{lstm}}{1}
+
+En cambio, en una célula LSTM encontramos que está compuesta por cuatro capas interactuando entre ellas para determinar el mantenimiento de la información~\ref{fig:LSTM_Cell}.
+
+\imagen{LSTM_Cell}{Interior de una célula LSTM~\cite{lstm}}{1}
+
+Se puede encontrar más información acerca de las redes LSTM, su funcionamiento y la explicación de cada capa que se encuentra dentro de la célula en la página citada~\cite{lstm}.

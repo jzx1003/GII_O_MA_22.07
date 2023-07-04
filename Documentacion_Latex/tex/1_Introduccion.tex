@@ -1,0 +1,23 @@
+\capitulo{1}{Introducción}
+
+El análisis de datos meteorológicos cumple un papel fundamental en la toma de decisiones y en la optimización de los procesos agronómicos en la agricultura y la viticultura. La recopilación y el análisis de datos precisos y actualizados que afectan a la agricultura y a la viticultura, como los datos meteorológicos, procedentes de sensores desplegados por el terreno, nos permite tener una mejor comprensión sobre las condiciones climáticas y el impacto que tiene en las variables de interés agronómico.
+
+\par
+
+El objetivo principal de este trabajo es realizar un análisis detallado de los datos meteorológicos recogidos por los sensores desplegados estratégicamente en un viñedo, así como la creación y comparación de diferentes modelos de renes neuronales aplicados a la predicción de series temporales relacionadas con estos datos recopilados. Específicamente, se busca utilizar estos modelos para predecir variables de interés agronómico en el viñedo lo que puede contribuir a una toma de decisiones más informada y precisa en el ámbito vitivinícola.
+
+\par
+
+Los sensores desplegados se encuentran en un viñedo a las afueras de Aranda de Duero, ubicado en el terreno de Burgos.
+
+\par
+
+Los datos recopilados a través de los sensores se han almacenado en archivos CSV independientes para cada sensor. Estos datos incluyen información relevante tomada cada cinco minutos, como el timestamp (marca de tiempo), fecha, nivel de batería, temperatura exterior, humedad exterior, temperatura a poca profundidad calibrada, humedad a poca profundidad calibrada, temperatura a mayor profundidad calibrada y humedad a mayor profundidad calibrada. Además, también se almacenan los datos de la humedad a poca profundidad y a mayor profundidad sin calibrar.
+
+\par
+
+Para validar los datos obtenidos por los sensores se ha llevado a cabo la obtención de datos meteorológicos históricos de la zona a través de una API y se ha realizado una comparación de los datos de cada sensor con los de los demás sensores para detectar valores anómalos.
+
+\par
+
+En este proyecto, se explorarán diferentes modelos para realizar predicciones de los valores meteorológicos, teniendo en cuenta la variabilidad de las condiciones climáticas. Se evaluarán y compararán distintas redes neuronales, buscando identificar aquellos que proporcionen las predicciones más precisas y confiables.

@@ -1,0 +1,318 @@
+\setcounter{secnumdepth}{4}
+
+\apendice{Desarrollo del proyecto}
+
+\section{Datos obtenidos de los sensores}
+
+Los datos que se han recogido a través de los sensores se han almacenado en archivos CSV independientes para cada sensor. Se han recogido los siguientes datos cada cinco minutos:
+
+\begin{itemize}
+    \item ts (TimeStamp)
+    \item fecha
+    \item bateria
+    \item \texttt{t\_ext} (temperatura exterior (ºC))
+    \item \texttt{h\_ext} (\% humedad exterior)
+    \item \texttt{t\_C\_cal} (temperatura a poca profundidad calibrada (ºC))
+    \item \texttt{h\_C\_cal} (\% humedad a poca profundida calibrada)
+    \item \texttt{t\_L\_cal} (temperatura a más profundidad calibrada (ºC))
+    \item \texttt{h\_L\_cal} (\% humedad a más profundidad calibrada)
+    \item \texttt{h\_C} (\% humedad a poca profundidad)
+    \item \texttt{h\_L} (\% humedad a más profundidad)
+\end{itemize}
+
+\section{Obtención de datos meteorológicos a través de una API}
+
+Este proyecto comienza con la obtención de los datos meteorológicos de la zona de los sensores para poder validar los datos obtenidos por estos últimos. Para ello, se ha hecho uso de Weatherbit para obtener datos meteorológicos, pero al observar que su límite de datos históricos con la licencia proporcionada para investigación era de un año, se optó por usar OpenWeatherMap, puesto que con la licencia que proporcionaba esta API para estudiantes permitía obtener los datos históricos de más de un año y ha permitido obtener datos históricos correspondientes al dato más antiguo proporcionado por los sensores.
+
+\par
+
+Para obtener los datos, se han realizado llamadas a la API de OpenWeatherMap introduciendo las fechas deseadas y las coordenadas. Se han hecho las llamadas necesarias para obtener datos de la localización de cada sensor y de todo el periodo en el que se han obtenido datos de los sensores.
+
+\par
+
+Tras haber realizado las llamadas y obtener los datos en un formato JSON, se han transformado los datos y se han almacenado en archivos CSV individuales para cada sensor.
+
+\section{Preprocesamiento de datos}
+
+Una vez se han obtenido los datos históricos de cada sensor, se ha realizado un preprocesamiento de los datos.
+
+\par
+
+Para empezar, se ha comprobado la validez de cada dato de los sensores comparándolos con los obtenidos a través de la API. Para comprobar la validez de los datos, se han creado columnas de validez correspondientes a cada uno de los atributos útiles, que serían la temperatura y la humedad exterior y la calibrada, creando un total de 6 columnas nuevas en el conjunto de datos.
+
+\par
+
+Una vez creadas las columnas, se ha empleado una codificación ternaria para la validación de los datos, asignando un valor de 0 a los datos sin validar, un valor de 1 a los datos no válidos y un valor de 3 a los datos válidos.
+
+\par
+
+Para comprobar la validez de los datos, se han comparado los valores recogidos por los sensores con los obtenidos a través de la API. Si el valor absoluto de la diferencia entre los valores supera un margen definido previamente, se considerará un dato no válido. Los márgenes definidos para cada uno de los atributos son los siguientes:
+
+\begin{itemize}
+    \item \texttt{t\_ext}: 7ºC
+    \item \texttt{h\_ext}: 15\% 
+    \item \texttt{t\_C\_cal}: 10ºC
+    \item \texttt{h\_C\_cal}: 30\%
+    \item \texttt{t\_L\_cal}: 10ºC
+    \item \texttt{h\_L\_cal}: 30\%
+\end{itemize}
+
+\par
+
+Al realizar la validación de los datos, se ha observado cómo la mayoría de los datos se consideraron no válidos, esto puede suceder debido a que los datos recogidos por los sensores pueden ser distintos a los que se han recogido por las estaciones meteorológicas que emplean las APIs. Esta diferencia puede estar causada por múltiples motivos, como por ejemplo, la composición del suelo donde esa desplegado el sensor, si hay árboles que proyecten sombra sobre el sensor, si hay vegetación alrededor del sensor que suavicen las temperaturas, la humedad puede diferir si se riega el terreno, etc. Por lo que se optó por cambiar el método de validación.
+
+\par
+
+El nuevo método empleado para la validación de los datos fue comparar cada uno de los datos de los sensores con la media móvil de los datos de todos los sensores. La media móvil se compone de los datos de los 15 minutos anteriores y los 15 posteriores en el caso de los atributos exteriores. Para los atributos de temperatura y humedad bajo tierra, se han empleado los datos de los 30 minutos anteriores y los 30 posteriores de todos los sensores.
+
+\imagen{datos_sensor1}{Visualización de la validez de los datos del sensor 1}{0.55}
+
+\par
+
+En el caso del pluviómetro, sí que se han empleado los datos obtenidos a través de la estación meteorológica usada por OpenWeatherMap, puesto que solo disponemos de un pluviómetro desplegado en el viñedo y no podemos realizar comparaciones con otros datos que no sean los históricos.
+
+\par
+
+Puesto que el pluviómetro puede recoger datos erróneos debido a un fuerte viento u otras causas, se ha realizado la validación con un margen de 10 milímetros de lluvia en la variación del pluviómetro.
+
+\imagen{datos_pluv}{Visualización de la validez de los datos del pluviómetro}{0.6}
+
+\par
+
+También se han añadido columnas correspondientes a la variación de la temperatura y la humedad bajo tierra del instante actual respecto al anterior y una columna indicando el mes en el que se ha recogido el dato.
+
+\imagen{datos_columnas}{Dataframe de los datos con todas las columnas}{1}
+
+\section{Visualización previa en MATLAB}
+
+Una vez concluido el preprocesamiento de los datos, se realizaron pruebas previas al desarrollo de las redes neuronales. Estas pruebas consistieron en pruebas de modelos, como una regresión lineal o una predicción de series temporales.
+
+\par
+
+Empleando el modelo de red neuronal proporcionado por MATLAB, se ha realizado una visualización previa de los resultados deseados de la red neuronal a desarrollar. El modelo proporcionado es una red neuronal no linear autorregresiva. Al entrenar este modelo con los datos de uno de los sensores devolvió un MSE de 0.2, podemos usar este valor para establecer un objetivo base.
+
+\section{Preparación de los datos}
+
+Antes de empezar a crear y entrenar modelos, deberemos preparar el conjunto de datos. Para ello, vamos a reducir el conjunto de datos. Puesto que el objetivo es realizar predicciones individuales para cada sensor, solo cogemos los datos de uno de los sensores, en este caso, se han escogido los datos del sensor 3, ya que al compararlo con los demás sensores, se observa que es el que tiene mayor continuidad en los datos.
+
+\par
+
+Tras haber escogido el conjunto de datos a emplear, vamos a reducir más aún la cantidad de datos a emplear. Para empezar, se ha transformado el conjunto de datos para que los datos no sean cada 5 minutos, sino que correspondan a un periodo de una hora, pues queremos realizar predicciones horarias y si lo hiciéramos con un conjunto de datos donde el periodo sea de 5 minutos tendríamos que realizar 12 predicciones y su precisión sería peor. Además, puesto que son datos meteorológicos, al recoger datos cada 5 minutos no se observa apenas diferencia y entraría dentro del rango de error del propio sensor.
+
+\par
+
+Para realizar la transformación del periodo de 5 minutos al periodo horario, se han agrupado los datos en grupos de 12 y se ha almacenado la media de cada uno de los atributos de cada uno de los grupos.
+
+\par
+
+Además, ya que los sensores pueden llegar a funcionar de manera incorrecta y no enviar los datos, pueden llegar a aparecer saltos y discontinuidades entre los datos. Para que eso no afecte en el entrenamiento de los modelos, se ha escogido un periodo en el que no haya ninguna discontinuidad. Ese periodo corresponde a los datos de los últimos 4 meses recogidos por el sensor.
+
+\par
+
+Por último, se han descartado atributos para el entrenamiento de las redes neuronales, puesto que aumentaba la complejidad y aumentaba el MSE de los modelos. Los atributos que se han empleado han sido la temperatura y la humedad bajo tierra, el mes y la hora, un total de 6 atributos.
+
+\section{Normalización}
+
+Para empezar a desarrollar nuestros modelos y comparar su precisión, primero debemos normalizar los valores del conjunto de datos, puesto que facilitará el aprendizaje de nuestros modelos.
+
+\par
+
+Para la normalización de los datos se han probado tanto la puntuación estándar como la puntuación Min-Max. A la hora de ver los resultados, se ha podido comprobar que en este caso particular es mejor la puntuación Min-Max.
+
+\par
+
+Una vez hemos normalizado los datos, dividimos los datos en el conjunto de datos de entrenamiento, el de validación y el de test. Para ello se ha seguido una proporción de 70/20/10 respectivamente. Para dividir el conjunto de datos se ha realizado de manera manual para que las secciones que crearemos a continuación tengan todas las horas seguidas y no haya saltos.
+
+\section{Data windowing}
+
+Para realizar predicciones de series temporales, debemos dividir el conjunto de datos en secciones más pequeñas y entrenar los modelos con esas secciones. Para distintos tipos de predicciones necesitaremos secciones de distintos tamaños.
+
+\par
+
+En este proyecto se han realizado dos tipos de predicciones, predicciones de un solo paso de tiempo y de múltiples pasos de tiempo. Para las predicciones de un solo paso se han creado secciones de 25 datos, donde se introducen como entrada los datos $t_0-t_{23}$ y se quieren predecir los datos $t_1-t_{24}$ de manera individual. En cambio, para las predicciones de múltiples pasos se han creado secciones de 48 datos, donde se introducen los datos $t_0-t_{23}$ y se quieren predecir los datos $t_{24}-t_{47}$.
+
+\par
+
+Para la creación de secciones de datos se ha creado una función específica para ello. Puesto que solo se realizan predicciones de uno de los parámetros del conjunto de datos, introducimos como argumento el parámetro a predecir, que en este caso es \texttt{t\_C\_cal}. Si queremos modificar la variable a predecir, debemos cambiar el argumento a la hora de crear las subsecciones.
+
+\section{Parámetros de entrenamiento}
+
+Para entrenar los modelos se han empleado los mismos parámetros para todos, ya que si no empleamos los mismos no obtendríamos unos resultados que podamos comparar debido a las diferencias en el entrenamiento.
+
+\par
+
+Para ello, se ha creado una función para configurar y entrenar los modelos. La función configura los modelos con los siguientes parámetros:
+
+\begin{itemize}
+    \item Nº de generaciones: 200
+    \item Paciencia (Nº generaciones sin mejora): 5
+    \item Función de pérdida: MSE\footnote{{\label{noteMSE}}Son las siglas del Error Cuadrático Medio en inglés, es una función de pérdida que mide la diferencia entre el valor real y el valor predicho y lo eleva al cuadrado.}
+    \item Optimizador: Adam\footnote{Adam\cite{adam} es un optimizador que emplea el algoritmo Adam, que combina dos algoritmos, AdaGrad y RMSProp.}
+    \item Métricas: MSE
+\end{itemize}
+
+\section{Modelos para predicciones de un solo paso}
+
+Para los modelos para predicciones de un solo paso, es decir, una predicción de un solo dato en el futuro, se ha decidido que las predicciones a realizar sean, teniendo 24 horas de datos como entrada ($t_0-t_{23}$), que realice las predicciones de los instantes siguientes ($t_1-t_{24}$).
+
+\imagen{single_step}{Ejemplos de secciones de datos para las predicciones de un solo paso}{1}
+
+\subsection{Baseline}
+
+Este es el modelo más simple y no necesita de un entrenamiento. Sus predicciones se basan en que no hay cambio, por lo que devuelve el mismo valor que el último dato introducido como entrada.
+
+\par
+
+Podemos observar en la imagen \ref{fig:baseline} que las predicciones corresponden con la hora anterior.
+
+\imagen{baseline}{Resultados del modelo baseline}{0.9}
+
+\subsection{Modelo lineal}
+
+El modelo lineal se compone de una única capa Dense con una unidad, puesto que solo queremos que nos devuelva un atributo como predicción.
+
+\imagen{lineal_modelo}{Capas del modelo lineal}{0.5}
+
+Podemos observar en la siguiente imagen \ref{fig:lineal_single} los resultados.
+
+\imagen{lineal_single}{Resultados del modelo lineal}{0.9}
+
+Se puede ver que las predicciones realizadas por este modelo se alejan bastante del valor real que debería haber predicho.
+
+\subsection{Modelo LSTM}
+
+Por último, para las predicciones de un solo paso también se ha entrenado un modelo LSTM. Este modelo consta de una capa LSTM con 32 unidades y con el parámetro \texttt{return\_sequences=True}, para poder entrenarlo con 24 horas de datos a la vez, y de una capa Dense de una unidad.
+
+\imagen{lstm_modelo}{Capas del modelo LSTM}{0.5}
+
+En la imagen \ref{fig:lstm_single} podemos observar los resultados del modelo, y son bastante acertadas.
+
+\imagen{lstm_single}{Resultados del modelo LSTM}{0.9}
+
+\subsection{Resultados}
+
+Podemos observar en las imágenes~\ref{fig:resultados_single1} y~\ref{fig:resultados_single2} y en la tabla \ref{tabla:res-single} los resultados de los modelos de un paso.
+
+\imagen{resultados_single1}{Resultados de los modelos Baseline y LSTM}{0.7}
+
+\imagen{resultados_single2}{Resultados del modelo lineal}{0.7}
+
+\tablaSmall{Resultados de los modelos de un paso}{ l l l }{res-single}{Modelo & MSE Validación & MSE Test\\}{Baseline & 0.0002 & 0.0003\\
+Lineal & 0.0178 & 0.0932\\
+LSTM & 0.0002 & 0.0006\\}
+
+Podemos observar que el modelo lineal tiene un MSE muy alto en comparación con los otros dos modelos, teniendo en cuenta que el modelo baseline no realiza ningún cálculo y su predicción se basa en que no hay cambio y usamos este modelo como base para comparar los demás, podemos concluir que las predicciones realizadas por el modelo lineal no son acertadas y se alejan mucho del valor real. Esto se puede deber a múltiples factores, como una falta de entrenamiento o que este tipo de red neuronal no es el mejor para realizar predicciones de series temporales.
+
+\par
+
+En cambio, podemos ver que el modelo LSTM tiene un rendimiento muy bueno a la hora de realizar predicciones de un paso, aunque sigue siendo peor que el baseline, pero el error es tan pequeño que entra dentro del margen de error, pues el error es casi imperceptible.
+
+\section{Modelos para predicciones de múltiples pasos}
+
+Las predicciones de múltiples pasos son predicciones que pueden realizarse varios pasos de tiempo en el futuro. En este caso, se han realizado predicciones de las 24 horas posteriores ($t_{24}-t_{47}$) teniendo como datos de entrada las 24 horas anteriores ($t_0-t_{23}$).
+
+\par
+
+Para estas predicciones se han entrenado los modelos 10 veces y se ha almacenado la media de las ejecuciones para obtener unos resultados más fiables y menos afectadas por la aleatoriedad.
+
+\imagen{multi_step}{Ejemplos de secciones para las predicciones de múltiples pasos}{1}
+
+\subsection{Modelo lineal}
+
+Para las predicciones de múltiples pasos vamos a emplear el modelo lineal como modelo base para comparar el rendimiento de los demás. El modelo lineal realiza todas las predicciones necesarias a partir del último dato de entrada, es decir, la última hora que introducimos.
+
+\par
+
+Este modelo está compuesto de una capa Lambda que solo lee el último dato de entrada, una capa Dense y una capa Reshape para modificar la salida de la capa anterior.
+
+\imagen{lineal_multi_modelo}{Capas del modelo lineal}{0.5}
+
+\par
+
+Podemos ver las predicciones realizadas por este modelo en la imagen \ref{fig:lineal_multi}.
+
+\imagen{lineal_multi}{Predicciones de múltiples pasos del modelo lineal}{1}
+
+Se puede observar cómo la predicción de la primera hora es bastante cercana a su valor real, sin embargo, las siguientes horas se empiezan a alejar del valor que debería predecir. En cambio, se puede ver cómo las predicciones tienen una curva que se asemeja a la variación de la temperatura a lo largo del día, aunque las predicciones sean erróneas.
+
+\subsection{Modelo denso}
+
+El modelo denso es igual que el modelo lineal, solo que añade una capa Dense extra después de la capa Lambda para añadirle más potencia, sin embargo, sigue basando todas las predicciones en el último paso de tiempo de entrada. Esta capa Dense tiene 512 unidades y tiene la función de activación \textit{relu}.
+
+\imagen{dense_modelo}{Capas del modelo denso}{0.5}
+
+Las predicciones realizadas por este modelo se pueden visualizar en la siguiente imagen\ref{fig:dense_multi}.
+
+\imagen{dense_multi}{Predicciones de múltiples pasos del modelo denso}{1}
+
+Todas las predicciones se acercan bastante a su valor real y la curva de la variación de la temperatura se asemeja bastante. Podemos notar comparando estos resultados con los anteriores que la capa adicional sí que ha aumentado la potencia de la red neuronal a pesar de solo basar las predicciones en la última hora.
+
+\subsection{Modelo convolucional}
+
+El modelo convolucional realiza las predicciones en base a un historial de las últimas horas, lo que aumenta su precisión respecto al modelo anterior. En este caso, el modelo convolucional tiene un historial de todas las horas introducidas como entrada.
+
+\par
+
+Este modelo añade una capa adicional al modelo lineal que hemos mencionado antes, sin embargo, esta capa es de tipo \textit{Conv1D} y tiene 256 unidades y tiene un tamaño de kernel de 24, equivalente al tamaño del historial que queremos. Además, modifica la capa Lambda para que sea capaz de leer todas las horas y no solo la última.
+
+\imagen{cnn_modelo}{Capas del modelo convolucional}{0.5}
+
+Podemos ver que las predicciones devueltas por este modelo solo presenta una pequeña mejora frente al modelo anterior y es capaz de captar mejor la curva de la variación de la temperatura a lo largo del día, por lo que también es capaz de realizar predicciones más acertadas.
+
+\imagen{cnn_multi}{Predicciones de múltiples pasos del modelo convolucional}{1}
+
+\subsection{Modelo LSTM}
+
+El modelo LSTM es un modelo recurrente que entrena un modelo de manera recurrente tantas veces como datos de entrada introduzcamos y luego realiza las predicciones con el último modelo.
+
+\par
+
+Este modelo está compuesto por una capa Dense con 32 unidades y con el parámetro \texttt{return\_sequences=False}, una capa Dense y una capa Reshape.
+
+\imagen{lstm_multi_modelo}{Capas del modelo LSTM}{0.5}
+
+Podemos observar que los resultados de este modelo son bastante similares al modelo convolucional, si embargo, se puede apreciar que las primeras predicciones devueltas suelen tener una mayor variación respecto a su valor real, pero las siguientes se acercan más al valor que debería predecir.
+
+\imagen{lstm_multi}{Predicciones de múltiples pasos del modelo LSTM}{0.9}
+
+Se podría concluir que este modelo no es capaz de predecir correctamente las primeras horas a la hora de realizar predicciones de múltiples pasos, sin embargo, su precisión mejora a medida que aumentamos los pasos de tiempo.
+
+\subsection{Modelo LSTM autorregresivo}
+
+Para finalizar, el último modelo entrenado y comparado es un modelo LSTM autorregresivo, que entrena el modelo de la misma manera que el modelo anterior, sin embargo, cada vez que realiza una predicción, vuelve a entrenar el modelo.
+
+\par
+
+Para este modelo se ha creado una clase FeedBack, que representa el modelo, y emplea una capa LSTMCell dentro de una capa RNN y, a continuación de esta, una capa Dense.
+
+\par
+
+A continuación, se ha creado un método de calentamiento para inicializar el estado interno en base a la entrada, que sería equivalente al modelo LSTM para predicciones de un solo paso. Tras la creación de este método, se ha modificado el método \textit{call} del modelo para que inicialice el estado empleando el método creado, haga la primera predicción con el calentamiento y realice el resto de las predicciones.
+
+\par
+
+Podemos ver que las predicciones realizadas por este modelo suele realizar las primeras horas de manera más o menos acertada. Sin embargo, tras unas cuantas predicciones devuelve unos valores anómalos que se alejan bastante de la curva de la variación de la temperatura y del valor real a predecir.
+
+\imagen{lstm_ar_multi}{Predicciones de múltiples pasos del modelo LSTM autorregresivo}{0.9}
+
+\subsection{Resultados}
+
+Podemos observar en la siguiente tabla y en la imagen los valores correspondientes al MSE de cada modelo.
+
+\tablaSmall{Resultados de los modelos de múltiples pasos}{ l l l }{res-multi}{Modelo & MSE Validación & MSE Test\\}{Lineal & 0.0175 & 0.0602\\
+Denso & 0.0064 & 0.0324\\
+Convolucional & 0.0039 & 0.0224\\
+LSTM & 0.0052 & 0.0425\\
+LSTM autorregresivo & 0.0056 & 0.0419\\}
+
+\imagen{resultados_multi}{Resultados de los modelos de múltiples pasos}{0.6}
+
+Se puede apreciar cómo los modelos más simples y el más complejo tienen un peor rendimiento respecto a los modelos que se encuentran entre ellos. Ya que los modelos lineal y denso solo realizan las predicciones en base al último paso de tiempo que se introduce como entrada, cabe esperar que sus predicciones tampoco sean tan exactas como las de los demás modelos.
+
+\par
+
+También podemos observar que el modelo LSTM autorregresivo tiene una precisión parecida comparada con su modelo más simple para realizar predicciones de múltiples pasos. Esto se puede deber a que un modelo demasiado complejo disponga de un número de pesos demasiado elevado para el entrenamiento y haga predicciones no tan acertadas y no sigan una tendencia regular.
+
+\par
+
+Cabe mencionar que todos estos modelos no son capaces de realizar una predicción con precisión cuando las temperaturas del día a predecir varían mucho respecto a las del día anterior, puesto que como solo introducimos 24 horas, las predicciones realizadas por los modelos seguirán la tendencia del día anterior y no se saldrán casi de los valores máximos o mínimos del día anterior.

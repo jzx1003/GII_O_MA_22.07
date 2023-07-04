@@ -1,0 +1,173 @@
+\setcounter{secnumdepth}{4}
+
+\capitulo{5}{Aspectos relevantes del proyecto}
+
+En este apartado se va a resumir el desarrollo del proyecto y mencionar los aspectos más relevantes de este. Se va a mencionar de dónde se han obtenido los datos con los que se trabaja, cómo se han preprocesado los datos, cómo se han preparado para su uso en los modelos, la normalización de los datos, la división del conjunto de datos para poder realizar predicciones de series temporales y los modelos entrenados y la comparación realizada en base a los resultados devueltos por ellos. Se puede encontrar el desarrollo del proyecto completo en los anexos.
+
+\section{Datos obtenidos de los sensores}
+
+Los datos empleados en este proyecto provienen de ocho sensores IoT y de un pluviómetro desplegados en un viñedo ubicado en Burgos. Los sensores recogen datos meteorológicos del exterior y del suelo en la ubicación en el que se han desplegado. Las variables recogidas por los sensores son los siguientes:
+
+\begin{itemize}
+    \item ts (\textit{TimeStamp})
+    \item fecha
+    \item bateria
+    \item \texttt{t\_ext} (temperatura exterior)
+    \item \texttt{h\_ext} (\% humedad exterior)
+    \item \texttt{t\_C\_cal} (temperatura a poca profundidad calibrada)
+    \item \texttt{h\_C\_cal} (\% humedad a poca profundida calibrada)
+    \item \texttt{t\_L\_cal} (temperatura a más profundidad calibrada)
+    \item \texttt{h\_L\_cal} (\% humedad a más profundidad calibrada)
+    \item \texttt{h\_C} (\% humedad a poca profundidad)
+    \item \texttt{h\_L} (\% humedad a más profundidad)
+\end{itemize}
+
+Por último, el pluviómetro recoge el \textit{TimeStamp}, la fecha, la batería, los milímetros de precipitación acumulados desde el inicio, la variación de los milímetros de precipitación y los milímetros de precipitación por metro cuadrado.
+
+Los datos que se han recogido a través de los sensores se han almacenado en archivos CSV independientes para cada sensor. Se han recogido datos cada cinco minutos sobre distintos parámetros relacionados con el suelo y el exterior.
+
+\section{Obtención de datos meteorológicos a través de una API}
+
+Este proyecto comienza con la obtención de los datos meteorológicos de la zona de los sensores para poder validar los datos obtenidos por estos últimos. Para obtener los datos, se han realizado llamadas a la API de Weatherbit introduciendo las fechas deseadas y las coordenadas. Se han hecho las llamadas necesarias para obtener datos de la localización de cada sensor y de todo el periodo en el que se han obtenido datos de los sensores.
+
+\par
+
+Tras haber realizado las llamadas y obtener los datos en un formato JSON, se han transformado los datos y se han almacenado en archivos CSV individuales para cada sensor.
+
+\section{Preprocesamiento de datos}
+
+Una vez se han obtenido los datos históricos de cada sensor, se ha realizado un preprocesamiento de los datos para comprobar la validez de cada dato que forma el conjunto de datos de cada sensor.
+
+\section{Visualización previa en MATLAB}
+
+Una vez concluido el preprocesamiento de los datos, se realizaron pruebas previas al desarrollo de las redes neuronales. Estas pruebas consistieron en la búsqueda de correlaciones entre las columnas que tenía el conjunto de datos y pruebas de modelos, como una regresión lineal o una predicción de series temporales.
+
+\par
+
+Empleando el modelo de red neuronal proporcionado por MATLAB, se ha realizado una visualización previa de los resultados deseados de la red neuronal a desarrollar. El modelo proporcionado es una red neuronal no linear autorregresiva. Para tener un objetivo base, se ha establecido que sea el valor de error devuelto por el modelo de MATLAB tras el entrenamiento.
+
+\section{Preparación de los datos}
+
+Antes de empezar a crear y entrenar modelos, deberemos preparar el conjunto de datos. Para ello, vamos a reducir el conjunto de datos. Puesto que el objetivo es realizar predicciones individuales para cada sensor, solo cogemos los datos de uno de los sensores, en este caso, se han escogido los datos del sensor 3, ya que al compararlo con los demás sensores, se observa que es el que tiene mayor continuidad en los datos.
+
+\par
+
+Tras haber escogido el conjunto de datos a emplear, vamos a reducir más aún la cantidad de datos a emplear. Para empezar, se ha transformado el conjunto de datos para que los datos no sean cada 5 minutos, sino que correspondan a un periodo de una hora, pues queremos realizar predicciones horarias y si lo hiciéramos con un conjunto de datos donde el periodo sea de 5 minutos tendríamos que realizar 12 predicciones y su precisión sería peor. Además, puesto que son datos meteorológicos, al recoger datos cada 5 minutos no se observa apenas diferencia y entraría dentro del rango de error del propio sensor.
+
+\par
+
+Para realizar la transformación del periodo de 5 minutos al periodo horario, se han agrupado los datos en grupos de 12 y se ha almacenado la media de cada uno de los atributos de cada uno de los grupos.
+
+\par
+
+Además, ya que los sensores pueden llegar a funcionar de manera incorrecta y no enviar los datos, pueden llegar a aparecer saltos y discontinuidades entre los datos. Para que eso no afecte en el entrenamiento de los modelos, se ha escogido un periodo en el que no haya ninguna discontinuidad. Ese periodo corresponde a los datos de los últimos 4 meses recogidos por el sensor.
+
+\par
+
+Por último, se han descartado atributos para el entrenamiento de las redes neuronales, puesto que aumentaba la complejidad y aumentaba el MSE de los modelos. Los atributos que se han empleado han sido la temperatura y la humedad bajo tierra, el mes y la hora, un total de 6 atributos.
+
+\section{Normalización}
+
+Para empezar a desarrollar nuestros modelos y comparar su precisión, primero debemos normalizar los valores del conjunto de datos, puesto que facilitará el aprendizaje de nuestros modelos.
+
+\par
+
+Para la normalización de los datos se han probado tanto la puntuación estándar como la puntuación Min-Max. A la hora de ver los resultados, se ha podido comprobar que en este caso particular es mejor la puntuación Min-Max.
+
+\par
+
+Una vez hemos normalizado los datos, dividimos los datos en el conjunto de datos de entrenamiento, el de validación y el de test. Para ello se ha seguido una proporción de 70/20/10 respectivamente. Para dividir el conjunto de datos se ha realizado de manera manual para que las secciones que crearemos a continuación tengan todas las horas seguidas y no haya saltos.
+
+\section{Data windowing}
+
+Para realizar predicciones de series temporales, debemos dividir el conjunto de datos en secciones más pequeñas y entrenar los modelos con esas secciones. Para distintos tipos de predicciones necesitaremos secciones de distintos tamaños.
+
+\par
+
+En este proyecto se han realizado dos tipos de predicciones, predicciones de un solo paso de tiempo y de múltiples pasos de tiempo. Para las predicciones de un solo paso se han creado secciones de 25 datos, donde se introducen como entrada los datos $t_0-t_{23}$ y se quieren predecir los datos $t_1-t_{24}$ de manera individual. En cambio, para las predicciones de múltiples pasos se han creado secciones de 48 datos, donde se introducen los datos $t_0-t_{23}$ y se quieren predecir los datos $t_{24}-t_{47}$.
+
+\par
+
+Para la creación de secciones de datos se ha creado una función específica para ello. Puesto que solo se realizan predicciones de uno de los parámetros del conjunto de datos, introducimos como argumento el parámetro a predecir, que en este caso es \texttt{t\_C\_cal}. Si queremos modificar la variable a predecir, debemos cambiar el argumento a la hora de crear las subsecciones.
+
+\section{Parámetros de entrenamiento}
+
+Para entrenar los modelos se han empleado los mismos parámetros para todos, ya que si no empleamos los mismos no obtendríamos unos resultados que podamos comparar debido a las diferencias en el entrenamiento.
+
+\section{Modelos para predicciones de un solo paso}
+
+Para los modelos para predicciones de un solo paso, es decir, una predicción de un solo dato en el futuro, se ha decidido que las predicciones a realizar sean, teniendo 24 horas de datos como entrada, que en este caso son 24 pasos de tiempo ($t_0-t_{23}$), que realice las predicciones de los instantes siguientes ($t_1-t_{24}$).
+
+\imagen{single_step}{Ejemplos de secciones de datos para las predicciones de un solo paso}{1}
+
+Para estas predicciones se han empleado tres modelos distintos, que son:
+
+\begin{enumerate}
+    \item Baseline
+    \item Modelo lineal
+    \item Modelo LSTM
+\end{enumerate}
+
+\subsection{Resultados}
+
+Podemos observar en las imágenes~\ref{fig:resultados_single1} y~\ref{fig:resultados_single2} y en la tabla \ref{tabla:res-single} los resultados de los modelos de un paso.
+
+\imagen{resultados_single1}{Resultados de los modelos Baseline y LSTM}{0.7}
+
+\imagen{resultados_single2}{Resultados del modelo lineal}{0.7}
+
+\tablaSmall{Resultados de los modelos de un paso}{ l l l }{res-single}{Modelo & MSE Validación & MSE Test\\}{Baseline & 0.0002 & 0.0003\\
+Lineal & 0.0178 & 0.0932\\
+LSTM & 0.0002 & 0.0006\\}
+
+Podemos observar que el modelo lineal tiene un error muy alto en comparación con los otros dos modelos, teniendo en cuenta que el modelo baseline no realiza ningún cálculo y su predicción se basa en que no hay cambio y usamos este modelo como base para comparar los demás, podemos concluir que las predicciones realizadas por el modelo lineal no son acertadas y se alejan mucho del valor real. Esto se puede deber a múltiples factores, como una falta de entrenamiento, que este tipo de red neuronal no es el mejor para realizar predicciones de series temporales o que hay que modificar los parámetros del modelo para optimizarlo.
+
+\par
+
+En cambio, podemos ver que el modelo LSTM tiene un rendimiento muy bueno a la hora de realizar predicciones de un paso, aunque en el conjunto de datos de \textit{test} tenga un mayor error que el modelo \textit{baseline}, este error es tan pequeño que apenas es perceptible en las predicciones.
+
+\section{Modelos para predicciones de múltiples pasos}
+
+Las predicciones de múltiples pasos son predicciones que pueden realizarse varios pasos de tiempo en el futuro. En este caso, se han realizado predicciones de las 24 horas posteriores ($t_{24}-t_{47}$) teniendo como datos de entrada las 24 horas anteriores ($t_0-t_{23}$).
+
+\par
+
+Para estas predicciones se han entrenado los modelos 10 veces y se ha almacenado la media de las ejecuciones para obtener unos resultados más fiables y menos afectadas por la aleatoriedad.
+
+\imagen{multi_step}{Ejemplos de secciones para las predicciones de múltiples pasos}{0.8}
+
+\par
+
+Para realizar estas predicciones se han empleado y comparado cinco modelos, que son los siguientes:
+
+\begin{enumerate}
+    \item Modelo lineal
+    \item Modelo denso
+    \item Modelo convolucional
+    \item Modelo LSTM
+    \item Modelo LSTM autorregresivo
+\end{enumerate}
+
+Para las predicciones de múltiples pasos vamos a emplear el modelo lineal como modelo base para comparar el rendimiento de los demás.
+
+\subsection{Resultados}
+
+Podemos observar en la siguiente tabla y en la imagen los valores correspondientes al MSE de cada modelo.
+
+\imagen{resultados_multi}{Resultados de los modelos de múltiples pasos}{0.6}
+
+\tablaSmall{Resultados de los modelos de múltiples pasos}{ l l l }{res-multi}{Modelo & MSE Validación & MSE Test\\}{Lineal & 0.0175 & 0.0602\\
+Denso & 0.0064 & 0.0324\\
+Convolucional & 0.0039 & 0.0224\\
+LSTM & 0.0052 & 0.0425\\
+LSTM autorregresivo & 0.0056 & 0.0419\\}
+
+Se puede apreciar cómo los modelos más simples y el más complejo tienen un peor rendimiento respecto a los modelos que se encuentran entre ellos. Ya que los modelos lineal y denso solo realizan las predicciones en base al último paso de tiempo que se introduce como entrada, cabe esperar que sus predicciones tampoco sean tan exactas como las de los demás modelos.
+
+\par
+
+También podemos observar que el modelo LSTM autorregresivo tiene una precisión parecida comparada con su modelo más simple para realizar predicciones de múltiples pasos. Esto se puede deber a que un modelo demasiado complejo disponga de un número de pesos demasiado elevado para el entrenamiento y haga predicciones no tan acertadas y no sigan una tendencia regular.
+
+\par
+
+Cabe mencionar que todos estos modelos no son capaces de realizar una predicción con precisión cuando las temperaturas del día a predecir varían mucho respecto a las del día anterior, puesto que como solo introducimos 24 horas, las predicciones realizadas por los modelos seguirán la tendencia del día anterior y no se saldrán casi de los valores máximos o mínimos del día anterior.

@@ -1,0 +1,102 @@
+\apendice{Documentación técnica de programación} \label{Documentacion_programacion}
+
+\section{Introducción}
+
+En esta sección se comentará la estructura de los directorios del proyecto y su proceso de ejecución para poder replicarlo.
+
+\section{Estructura de directorios}
+
+El proyecto tiene los siguientes directorios y ficheros:
+
+\begin{itemize}
+    \item /2022-10-01/: en este directorio se encuentran los datos recogidos por cada sensor sin tratar.
+    \item /Datos API/: en este directorio se encuentran los datos meteorológicos históricos obtenidos a través de las APIs empleadas. Se encuentran los datos históricos de ambas APIs utilizadas.
+    \item /DatosValidados/: en este directorio se encuentran los datos de cada sensor validados. Se encuentran los ficheros que contienen todos los datos con columnas de validación y los ficheros que solo contienen datos con todos los atributos válidos.
+    \item /Graficas.ipynb: este fichero contiene código que devuelve gráficas de validez de los datos.
+    \item /Predicciones.ipynb: este fichero contiene el código necesario para la preparación de los datos, la normalización de estos, la generación de secciones y el entrenamiento y validación de los modelos. También está la visualización de los resultados de cada modelo.
+    \item /Validacion.ipynb: en este fichero se encuentra el código empleado para la obtención de datos a través de APIs y para la limpieza de los datos de los sensores. También se encuentra el código empleado para la adición de atributos al conjunto de datos.
+\end{itemize}
+
+\section{Compilación, instalación y ejecución del proyecto}
+
+En esta sección se explicarán los pasos necesarios para replicar el entorno en el que se ha ejecutado el código del proyecto.
+
+\subsection{Git}
+
+Si queremos clonar el repositorio necesitamos tener Git instalado en el equipo. Para ello, podemos acceder a su página web~\cite{git}.
+
+Una vez tenemos Git en el equipo, basta con clonar el repositorio. Para ello nos dirigimos al directorio donde queremos que se clone, abrimos una consola de comandos y escribimos el siguiente comando:
+
+\texttt{git clone https://github.com/jzx1003/GII\_O\_MA\_22.07.git}
+
+\subsection{Entorno de ejecución}
+
+Para poder ejecutar el código, necesitamos un entorno donde ejecutar el código, en este proyecto se ha empleado Visual Studio Code~\cite{vscode} para la ejecución, aunque se puede realizar empleando solamente Anaconda~\cite{anaconda}. La versión de Python empleada es Python 3.10.9, por lo que si queremos emplear Anaconda para la ejecución, deberemos instalar la versión correspondiente que emplee esa versión de Python. No es necesario instalar Python aparte, puesto que el instalador de Anaconda también lo instala.
+
+Tras la instalación de Anaconda, podemos emplear la herramienta Jupyter Notebook que trae Anaconda para abrir el fichero y ejecutarlo. 
+
+Para su ejecución con Visual Studio Code deberemos instalar las extensiones de Jupyter ofrecidas por Microsoft en la pestaña de extensiones de la propia aplicación. Se pueden ver las extensiones en la figura~\ref{fig:vscode_jupyter}.
+
+\imagen{vscode_jupyter}{Extensiones de Jupyter en Visual Studio Code}{1}
+
+\section{Manual del programador}
+
+En este último apartado se explicará cómo un programador puede ejecutar y modificar los parámetros del código. Para poder ejecutar el código necesitamos cumplir con lo mencionado en el apartado anterior.
+
+\par
+
+El fichero que contiene el código que entrena los distintos modelos es el fichero \texttt{Predicciones.ipynb}. El proceso que se sigue en ese fichero es el siguiente:
+
+\begin{itemize}
+    \item Carga de datos
+    \item Preparación de los datos
+    \item Normalización de los datos
+    \item División del conjunto de datos
+    \item Generación de secciones
+    \item Configuración de los parámetros de entrenamiento
+    \item Entrenamiento y validación de los modelos
+    \item Visualización de los resultados
+\end{itemize}
+
+En la carga de datos, podemos modificar qué fichero queremos que cargue cambiando la ruta para que lea el fichero deseado y lo almacene en un DataFrame de Pandas. En la figura~\ref{fig:carga_datos} se puede observar la carga de datos.
+
+\imagen{carga_datos}{Código de la carga de datos}{1}
+
+En la preparación de datos podemos escoger el rango de los datos que queremos usar para el entrenamiento y los atributos que queremos descartar. En este caso, descartamos muchos de los atributos, pues se ha querido entrenar los modelos con una menor cantidad de datos y reducir la complejidad. En la figura~\ref{fig:preparacion_datos} se realiza la preparación del conjunto de datos.
+
+\imagen{preparacion_datos}{Código de la preparación de los datos}{1}
+
+A continuación, se realiza la normalización de los datos, en este caso se ha empleado la normalización Min-Max, se puede modificar el código para cambiar el método de normalización. En la figura~\ref{fig:normalizacion} se puede observar la celda empleada para la normalización.
+
+\imagen{normalizacion}{Código de la normalización de los atributos}{1}
+
+Para dividir el conjunto de datos en los \textit{sets} de entrenamiento, validación y test se ha empleado el código de la celda mostrada en la figura~\ref{fig:division_datos}. Se puede modificar el porcentaje de datos asignado a cada \textit{set} cambiando los valores decimales.
+
+\imagen{division_datos}{Código de la división de datos}{1}
+
+A continuación, podemos modificar las secciones generadas para las predicciones empleando la función WindowGenerator, creada para ello. Los parámetros a introducir en la función son los siguientes:
+
+\begin{itemize}
+    \item \texttt{input\_width}: Número de pasos de tiempo que introducimos como entrada
+    \item \texttt{label\_width}: Número de pasos de tiempo a predecir
+    \item \texttt{shift}: Desplazamiento de los pasos de tiempo a predecir respecto a los pasos de tiempo de entrada
+    \item \texttt{label\_columns}: Nombre de los atributos a predecir y a mostrar
+\end{itemize}
+
+En la figura~\ref{fig:window_codigo} podemos observar las secciones creadas para las predicciones de un solo paso.
+
+\imagen{window_codigo}{Código de las secciones para predicciones de un solo paso}{0.7}
+
+También podemos modificar los parámetros de la función empleada para el entrenamiento y la validación de los modelos. La función creada se llama \texttt{compile\_and\_fit(model, window, patience)}. Introducimos como primer argumento el modelo a entrenar y validar, como segundo argumento la sección que queramos emplear para las predicciones y como último argumento la paciencia que queramos que tenga.
+
+\par
+
+Además, también podemos modificar el número de generaciones máximas que queremos que tengan los modelos, la pérdida empleada, el optimizador y las métricas del entrenamiento. En la figura~\ref{fig:codigo_entrenamiento} se muestra la función mencionada con sus parámetros.
+
+\imagen{codigo_entrenamiento}{Función de entrenamiento de los modelos}{1}
+
+Por último, también se pueden modificar las unidades que hay en algunas capas de los modelos, para aumentar o disminuir la complejidad del modelo. Las capas que se pueden modificar tienen un comentario indicándolo en el código.
+
+\par
+
+Tras modificar todo lo deseado podemos ejecutar todas las celdas del fichero y esperar a que se entrenen todos los modelos y ver los resultados en las celdas indicadas para ello.

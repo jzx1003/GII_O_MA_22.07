@@ -1,0 +1,148 @@
+\apendice{Especificación de Requisitos}
+
+\section{Introducción}
+
+Al estar empleando \textit{Scrum} como metodología ágil, se van a describir a continuación las historias de usuario (requisitos) del proyecto.
+
+\section{Objetivos generales}
+
+Este proyecto cuenta con los siguientes objetivos técnicos:
+
+\begin{itemize}
+    \item Realizar predicciones de variables de interés agronómico en un viñedo.
+    \item Usar regresión mediante redes neuronales para la predicción en series temporales.
+    \item Realizar minería de datos sobre el conjunto de datos propuesto para tratarlos previamente al desarrollo de redes neuronales.
+    \item Comprender el funcionamiento de los distintos modelos de predicción a desarrollar.
+    \item Desarrollar múltiples modelos de predicción empleando distintos tipos de redes neuronales.
+    \item Realizar un análisis comparativo de los modelos desarrollados con los modelos de otros proyectos relacionados.
+\end{itemize}
+
+\section{Catálogo de requisitos}
+
+A partir de los objetivos descritos en el apartado anterior, podemos desarrollar las siguientes historias de usuario o \textit{User Stories} (US):
+
+\begin{itemize}
+    \item \textbf{HU-01} El usuario debe ser capaz de cargar los datos.
+    \item \textbf{HU-02} El usuario debe ser capaz de preparar los datos para el entrenamiento de los modelos.
+    \item \textbf{HU-03} El usuario debe ser capaz de modificar los parámetros de entrenamiento de los modelos.
+    \item \textbf{HU-04} El usuario debe poder modificar los parámetros de configuración del modelo.
+    \item \textbf{HU-05} El usuario debe ser capaz de entrenar un modelo.
+    \item \textbf{HU-06} El usuario debe ser capaz de validar un modelo.
+    \item \textbf{HU-07} El usuario debe ser capaz de visualizar los resultados.
+\end{itemize}
+
+\section{Especificación de requisitos}
+
+\subsection{Diagrama de casos de uso}
+
+\imagen{diagrama-cu}{Diagrama de casos de uso}{1}
+
+\subsection{Especificaciones de los casos de uso}
+
+% Caso de Uso 1 -> Carga de datos.
+\begin{table}[p]
+	\centering
+	\begin{tabularx}{\linewidth}{ p{0.21\columnwidth} p{0.71\columnwidth} }
+		\toprule
+		\textbf{CU-1}    & \textbf{Carga de datos}\\
+		\toprule
+		\textbf{Versión}              & 1.0    \\
+		\textbf{Requisitos asociados} & HU-01 \\
+		\textbf{Descripción}          & El usuario puede cargar los datos que se van a emplear para el entrenamiento de los modelos \\
+		\textbf{Precondición}         & El usuario debe disponer de un conjunto de datos \\
+		\textbf{Acciones}             &
+		\begin{enumerate}
+			\def\labelenumi{\arabic{enumi}.}
+			\tightlist
+			\item El usuario carga los datos del fichero en el código.
+		\end{enumerate}\\
+		\textbf{Postcondición}        & Se debe haber almacenado el conjunto de datos a emplear en una variable. \\
+		\textbf{Excepciones}          & El fichero tiene una extensión no aceptada. \\
+		\textbf{Importancia}          & Alta \\
+		\bottomrule
+	\end{tabularx}
+	\caption{CU-1 Carga de datos.}
+\end{table}
+
+% Caso de Uso 2 -> Preparación de datos.
+\begin{table}[p]
+	\centering
+	\begin{tabularx}{\linewidth}{ p{0.21\columnwidth} p{0.71\columnwidth} }
+		\toprule
+		\textbf{CU-2}    & \textbf{Preparación de datos}\\
+		\toprule
+		\textbf{Versión}              & 1.0    \\
+		\textbf{Requisitos asociados} & HU-02 \\
+		\textbf{Descripción}          & El usuario puede modificar el conjunto de datos cargado para emplear ciertas variables en vez de todas y descartar los datos que no se quieran emplear. También debe ser capaz de normalizar, dividir el conjunto de datos en \textit{sets} y generar secciones de datos. \\
+		\textbf{Precondición}         & El usuario debe disponer de un conjunto de datos. El usuario debe poder cargar datos. \\
+		\textbf{Acciones}             &
+		\begin{enumerate}
+			\def\labelenumi{\arabic{enumi}.}
+			\tightlist
+			\item El usuario carga los datos.
+            \item Si el usuario quiere descartar datos, descarta todos aquellos que no quiera usar para el entrenamiento.
+            \item Si el usuario quiere descartar variables del conjunto de datos, descarta aquellos que no quiera emplear para el entrenamiento.
+            \item El usuario normaliza los datos con la técnica deseada.
+            \item El usuario divide el conjunto de datos en conjunto de entrenamiento, de validación y de test.
+            \item El usuario genera secciones de datos para las predicciones de series temporales.
+		\end{enumerate}\\
+		\textbf{Postcondición}        & Se debe tener un conjunto de datos preparado para el entrenamiento de los modelos. \\
+		\textbf{Excepciones}          & El conjunto de datos está vacío. La suma de las proporciones de los \textit{sets} creados supera el 100\%. \\
+		\textbf{Importancia}          & Alta \\
+		\bottomrule
+	\end{tabularx}
+	\caption{CU-2 Preparación de datos.}
+\end{table}
+
+% Caso de Uso 3 -> Entrenamiento y validación de modelos.
+\begin{table}[p]
+	\centering
+	\begin{tabularx}{\linewidth}{ p{0.21\columnwidth} p{0.71\columnwidth} }
+		\toprule
+		\textbf{CU-3}    & \textbf{Entrenamiento y validación de modelos}\\
+		\toprule
+		\textbf{Versión}              & 1.0    \\
+		\textbf{Requisitos asociados} & HU-03, HU-04, HU-05, HU-06 \\
+		\textbf{Descripción}          & El usuario puede entrenar un modelo y validarlo a partir de un conjunto de datos preparado.\\
+		\textbf{Precondición}         & El usuario debe disponer de un conjunto de datos preparado. El usuario debe disponer de un modelo para entrenar.\\
+		\textbf{Acciones}             &
+		\begin{enumerate}
+			\def\labelenumi{\arabic{enumi}.}
+			\tightlist
+			\item El usuario modifica los parámetros del entrenamiento del modelo.
+            \item El usuario modifica los parámetros de la configuración del modelo.
+            \item El usuario entrena el modelo.
+            \item El usuario valida el modelo.
+		\end{enumerate}\\
+		\textbf{Postcondición}        & Se debe haber obtenido un modelo entrenado y validado. Se debe haber obtenido el error de ese modelo. \\
+		\textbf{Excepciones}          & El conjunto de datos está vacío. El modelo no está bien configurado.  \\
+		\textbf{Importancia}          & Alta \\
+		\bottomrule
+	\end{tabularx}
+	\caption{CU-3 Entrenamiento y validación de modelos.}
+\end{table}
+
+% Caso de Uso 4 -> Visualizar resultados.
+\begin{table}[p]
+	\centering
+	\begin{tabularx}{\linewidth}{ p{0.21\columnwidth} p{0.71\columnwidth} }
+		\toprule
+		\textbf{CU-4}    & \textbf{Visualizar los resultados}\\
+		\toprule
+		\textbf{Versión}              & 1.0    \\
+		\textbf{Requisitos asociados} & HU-07 \\
+		\textbf{Descripción}          & El usuario puede visualizar el error de cada modelo en una gráfica.\\
+		\textbf{Precondición}         & El usuario debe disponer de mínimo un modelo entrenado y validado.\\
+		\textbf{Acciones}             &
+		\begin{enumerate}
+			\def\labelenumi{\arabic{enumi}.}
+			\tightlist
+			\item El usuario muestra el error de cada modelo en una gráfica.
+		\end{enumerate}\\
+		\textbf{Postcondición}        & Se debe haber obtenido una gráfica donde se represente el error de cada modelo. \\
+		\textbf{Excepciones}          & No se ha entrenado ningún modelo.  \\
+		\textbf{Importancia}          & Alta \\
+		\bottomrule
+	\end{tabularx}
+	\caption{CU-4 Visualizar resultados.}
+\end{table}

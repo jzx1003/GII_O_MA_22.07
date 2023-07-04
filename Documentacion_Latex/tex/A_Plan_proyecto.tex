@@ -1,0 +1,265 @@
+\apendice{Plan de Proyecto Software}
+
+\section{Introducción}
+
+En este apéndice se explicarán la planificación realizada para el desarrollo del proyecto y la viabilidad de esta.
+
+\section{Planificación temporal}
+
+La planificación del proyecto y su desarrollo se han realizado siguiendo una metodología ágil, en este caso se ha empleado Scrum. Scrum emplea ciclos de desarrollo o iteraciones (\textit{sprints}), que definen cada una de las etapas de trabajo con un objetivo concreto dentro del desarrollo. Se ha intentado que la duración de los \textit{sprints} fueran consistentes, y sean de una duración de una o dos semanas.
+
+\subsection{01 - Preprocesamiento de datos [03/10/2022 - 31/10/2022]}
+
+Este primer \textit{sprint} se han realizado las siguientes tareas:
+
+\begin{itemize}
+    \item Estudio del proceso CRISP-DM: se ha estudiado el proceso y sus fases para aplicarlo al proyecto.
+    \item Estudio de la biblioteca de Python Pandas: dado que es la primera biblioteca que se va a emplear para poder importar y emplear el conjunto de datos en Python, se ha realizado un estudio de la biblioteca y de las funciones que tiene para el manejo de datos.
+    \item Validación de los datos: se ha intentado realizar una validación de los datos para descartar aquellos datos que son erróneos.
+\end{itemize}
+
+\subsection{02 - Validación de datos [31/10/2022 - 14/11/2022]}
+
+En este \textit{sprint} se han realizado las tareas mencionadas a continuación:
+
+\begin{itemize}
+    \item Creación de columnas de validación: se han creado una columna que contiene la información sobre si ese dato es válido en todos sus campos empleando una cadena numérica.
+    \item Descarga de datos de una API: se han obtenido datos meteorológicos históricos para validar los datos comparándolos del conjunto de datos con los obtenidos por la API.
+    \item Validación de los datos: se ha continuado con la validación de los datos, para ello los comparamos con los de la API.
+    \item Observación de relaciones con los datos válidos: una vez validamos los datos, queremos realizar un análisis de correlación lineal para ver las relaciones entre los atributos, como, por ejemplo, si la humedad sube cuando hay lluvia o la humedad disminuye cuando sube la temperatura.
+\end{itemize}
+
+\subsection{03 - Investigación para validar datos [14/11/2022 - 05/12/2022]}
+
+Durante este \textit{sprint} se han hecho las siguientes tareas:
+
+\begin{itemize}
+    \item Creación del repositorio en Github: se ha creado el repositorio en Github para poder gestionar los cambios en el código.
+    \item Investigación para validar datos: se ha investigado acerca de los márgenes adecuados a aplicar para descartar los datos, ya que queremos descartar el menor número de datos posible y que todos ellos sean válidos.
+\end{itemize}
+
+\subsection{04 - Continuación en la validación de datos [05/12/2022 - 30/01/2023]}
+
+En este \textit{sprint} se ha continuado con la validación de datos, ya que al estar trabajando con un conjunto de datos sin tratar, tenemos que realizar todo el proceso de preprocesamiento, incluyendo la investigación y las pruebas en la validación de datos.
+
+\subsection{05 - Cambio en la validación de datos [30/01/2023 - 20/02/2023]}
+
+Durante este \textit{sprint} se ha seguido con la validación de los datos. Se ha eliminado la columna que contenía la información sobre la validez del dato y se han añadido tantas columnas de validez como atributos queremos validar en cada dato. Se ha empleado una codificación ternaria en dichas columnas para indicar si el atributo es válido, no válido o no se ha validado.
+
+\subsection{06 - Cambio de API [20/02/2023 - 27/02/2023]}
+
+En ese \textit{sprint} se ha cambiado la API empleada y se ha usado Weatherbit en vez de OpenWeatherMap y se han hecho las llamadas correspondientes para volver a obtener los datos meteorológicos históricos.
+
+\subsection{07 - Cambio en la manera de validar [27/02/2023 - 06/03/2023]}
+
+En este \textit{sprint} se ha modificado la manera en la que se validan los datos, puesto que se descartaban demasiados datos con el anterior método de validación. Ya no usamos los datos de la API para compararlos con los de los sensores, en cambio, empleamos una media móvil de los datos de todos los sensores para validar cada uno de los datos de cada sensor.
+
+\subsection{08 - Análisis exploratorio de datos [06/03/2023 - 13/03/2023]}
+
+En este \textit{sprint} se ha realizado un análisis exploratorio del conjunto de datos y un estudio de correlaciones lineales de las variables para observar las posibles relaciones que pueda haber entre ellas.
+
+\subsection{09 - Adición de columnas [13/03/2023 - 20/03/2023]}
+
+En este \textit{sprint} se han añadido columnas de variación de la temperatura y la humedad exterior al conjunto de datos.
+
+\subsection{10 - Investigación y desarrollo de modelos para predicciones de un solo paso [20/03/2023 - 10/04/2023]}
+
+En este \textit{sprint} se han realizado las siguientes tareas:
+
+\begin{itemize}
+    \item Investigación de modelos de predicción de series temporales: se han investigado y se ha realizado una comparativa inicial de los modelos de predicción de un solo paso para escoger qué modelos desarrollar.
+    \item Desarrollo de modelos de predicción de un solo paso: se ha empezado el desarrollo de los modelos de predicción de un solo paso escogidos en base a la investigación anterior.
+    \item Adición de columna de meses: se ha añadido una columna para indicar el mes del año en el que se ha recogido el dato para proporcionar más información a los modelos a entrenar.
+\end{itemize}
+
+\subsection{11 - Desarrollo de modelos de predicción de un solo paso [10/04/2023 - 24/04/2023]}
+
+En este \textit{sprint} se han desarrollado y modificado los modelos lineal y LSTM empleados para las predicciones de un solo paso para conseguir la mejor precisión posible y se ha realizado una comparativa del error devuelto por cada modelo.
+
+\subsection{12 - Investigación y desarrollo de modelos para predicciones de múltiples pasos [24/04/2023 - 16/05/2023]}
+
+En este \textit{sprint} se han realizado las siguientes tareas:
+
+\begin{itemize}
+    \item Investigación de modelos de predicción de múltiples pasos: se ha investigado acerca de las redes neuronales que se pueden aplicar para predicciones de múltiples pasos.
+    \item Inicio del desarrollo de los modelos: se ha empezado el desarrollo de las redes neuronales que se van a emplear para este tipo de predicciones.
+    \item Cambio de normalización: se ha cambiado la técnica de normalización empleada, pasando de la puntuación estándar a la normalización Min-Max.
+    \item Adición del atributo hora: se ha añadido al conjunto de datos empleado el atributo hora para que los modelos sean capaces de realizar predicciones con mayor precisión.
+\end{itemize}
+
+\subsection{13 - Optimización de los modelos y modificación del conjunto de datos [16/05/2023 - 29/05/2023]}
+
+En este \textit{sprint} se han hecho las siguientes tareas:
+
+\begin{itemize}
+    \item Modificación del conjunto de datos: se quiere escoger un periodo en el que no haya saltos en los datos, para que todas las subsecciones creadas a partir del conjunto disponga de un subconjunto de datos donde todos los pasos de tiempo son continuos. Esto se realiza con la finalidad de optimizar los resultados de los modelos.
+    \item Optimización de los modelos: se han realizado varias pruebas con distintos parámetros de configuración de los modelos para encontrar los más óptimos.
+\end{itemize}
+
+\subsection{14 - Adición de nuevos modelos [29/05/2023 - 06/06/2023]}
+
+En este \textit{sprint} se han añadido dos nuevos modelos para predicciones de múltiples pasos, que son el modelo convolucional y el modelo \textit{Dense}.
+
+\subsection{15 - Redacción de la memoria y los anexos [06/06/2023 - 22/06/2023]}
+
+En este penúltimo \textit{sprint} se ha redactado la memoria y los anexos, siendo los últimos procesos a realizar del proyecto.
+
+\subsection{16 - Retoques finales [22/06/2023 - 30/06/2023]}
+
+En el último \textit{sprint} del proyecto se han realizado las siguientes tareas:
+
+\begin{itemize}
+    \item Finalización de la memoria: se ha terminado de redactar la memoria del proyecto.
+    \item Modificación del código: se ha modificado el fichero que mostraba las gráficas para añadir imágenes a la memoria.
+    \item Finalización de los anexos: se han terminado de redactar los distintos anexos.
+\end{itemize}
+
+\section{Estudio de viabilidad}
+
+A continuación se realizará un breve estudio de la viabilidad económica y legal del proyecto.
+
+\subsection{Viabilidad económica}
+
+Este proyecto está solamente enfocado al desarrollo y uso de modelos, y no se ha planeado obtener ningún beneficio económico durante su desarrollo, por lo que no se podría considerar como un producto para publicarlo en el mercado. Además, tampoco se dispone de una aplicación que podamos publicar que permita la ejecución de los modelos.
+
+\par
+
+Sin embargo, aunque no tiene como objetivo obtener ganancias económicas, es importante considerar los coses asociados al proyecto.
+
+\par
+
+Algunos aspectos a tener en cuenta para realizar los cálculos son los siguientes:
+
+\begin{itemize}
+    \item Suponemos que el proyecto se realiza en una empresa ubicada en España.
+    \item El proyecto tiene una duración aproximada de 9 meses, desde principios de octubre hasta principios de julio. Lo que equivale a 36 semanas aproximadamente, considerando una duración de 4 semanas por mes.
+    \item El equipo encargado del proyecto está compuesto por un desarrollador (el alumno), el \textit{Product Owner} y el \textit{Scrum Master}, que son los tutores del alumno en el proyecto.
+\end{itemize}
+
+\subsubsection{Costes}
+
+Para empezar, empezaremos calculando los costes de la empresa.
+
+\begin{enumerate}
+    \item \textbf{Empleados}
+    \par
+    Calcularemos el salario de cada uno de los empleados teniendo en cuenta el salario promedio en España.
+    \begin{itemize}
+        \item \textbf{Desarrollador}: dado que el desarrollador es considera un programador \textit{junior}, su salario bruto en España sería de 19.000 € anuales~\cite{salario:junior}. Teniendo en cuenta la duración del proyecto y suponiendo que las pagas mensuales estan prorrateadas, podemos sacar el coste total con la siguiente fórmula:
+        
+        \[\textup{Salario bruto mensual} = \frac{\textup{Salario bruto anual}}{\textup{12 pagas}}\]
+
+        \par
+
+        Sustituyendo los valores, obtenemos el coste mensual, que es de:
+
+        \[\textup{Salario bruto mensual} = \frac{\textup{19\,700 €}}{\textup{12 pagas}} \approx \textup{1641,67 €}\]
+        \item \textbf{Product Owner}: el salario medio es de 45.000 € brutos anuales~\cite{salario:owner}. El salario mensual de este empleado es de:
+
+        \[\textup{Salario bruto mensual} = \frac{\textup{45\,000 €}}{\textup{12 pagas}} \approx \textup{3750 €}\]
+
+        \item \textbf{Scrum Master}: el salario medio de este empleado es el mismo que el del \textit{Product Owner}~\cite{salario:master}.
+        
+    \end{itemize}
+
+    Por último, también tenemos que tener en cuenta las horas aplicadas al proyecto por parte del \textit{Product Owner} y del \textit{Scrum Master} para calcular el coste real del proyecto. Vamos a suponer que dedican un 5\% de su jornada laboral al proyecto, por lo que, los costes de los salarios que se aplican al proyecto son de:
+
+    \[\textup{Coste por empleado} = \textup{3.750 €} \times 0,05 \approx \textup{187,5 €}\]
+
+    \par
+
+    Teniendo en cuenta los salarios brutos, podemos calcular el coste total de los empleados sin tener en cuenta los costes adicionales a pagar por la empresa por la Seguridad Social.
+
+    \par
+
+    El coste total de los salarios brutos es de 18.150,03 € aproximadamente.
+    
+    \item\textit{\textbf{Hardware}}
+    \par
+
+    Como costes de \textit{hardware} incluiremos el ordenador del alumno, que ha sido lo que se ha empleado para el desarrollo del proyecto. El equipo dispone de un procesador Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz y 16 GB de memoria RAM. Este equipo se compró hace 6 años a un precio de aproximadamente 1.300 €.
+
+    Vamos a suponer la amortización del equipo, suponiendo una vida útil del equipo de 10 años. La amortización anual del equipo es de 130 €, por lo que para este proyecto necesitamos sacar el 75\% de ese coste.
+
+    Los costes de \textit{hardware} de este proyecto han sido de 97,5 €.
+
+    \item \textbf{\textit{Software}}
+    \par
+
+    Como costes de \textit{software} podemos incluir las licencias de las herramientas empleadas que tengan un coste. Ya que en el caso del proyecto se han empleado licencias temporales gratuitas, vamos a suponer los costes una vez finalicen los plazos de estas.
+
+    \begin{itemize}
+        \item \textbf{Weatherbit}: para obtener los datos de la API necesitaríamos una licencia <<Pro>> como mínimo, cuyo coste es de 180 € al mes. Ya que solo lo usaríamos el primer mes para obtener los datos históricos y ya, solo contabilizamos un mes de costes.
+        \item \textbf{Github}: tendríamos que pagar la versión \textit{Enterprise} del Github, que tiene un coste de 19,64 € anuales aproximadamente.
+        \item \textbf{MATLAB}: por último, como también se emplea MATLAB en una fase del proyecto, debemos tener en cuenta el coste de su licencia. En el caso supuesto, necesitaríamos la licencia \textit{Standard}. que tiene un coste anual de 860 €.
+    \end{itemize}
+
+    A partir de los gastos mencionados, podemos obtener el coste del proyecto, que es de:
+
+    \[\textup{Gastos de software} = \textup{180 €} + (\textup{19,64 € + 860 €}) \times \textup{0,75} \approx \textup{837,48 €}\]
+\end{enumerate}
+
+En la tabla~\ref{tabla:costes} podemos observar los gastos totales del proyecto.
+
+\tablaSmall{Costes totales del proyecto}{ l l l }{costes}{Costes & & Coste Total\\}
+{Empleados & & 18.150,03 € €\\
+Hardware & & 97,5 €\\
+Software & & 837,48 €\\
+\hline\hline
+\textbf{Total} & & 19.085,01 €\\}
+
+\subsection{Viabilidad legal}
+
+Respecto a la viabilidad legal, podemos enfocarlo en dos puntos: las herramientas y los datos empleados.
+
+\par
+
+Respecto a las herramientas empleadas en este proyecto, es importante tener en cuenta las licencias de cada una de ellas. A continuación, se van a enumerar todas las licencias de las herramientas empleadas:
+
+\begin{itemize}
+    \item Licencia MIT: la licencia MIT permite el uso, copia, modificación y distribución del \textit{software}, tanto en proyectos comerciales como no comerciales, con la condición de mantener el aviso de derechos de autor y la exención de responsabilidad.
+    \item Licencia BSD: esta licencia permite el uso, modificación y distribución del \textit{software}.
+    \item Licencia Open Source: esta licencia permite su uso y distribución para uso personal y comercial.
+    \item Licencia GNU: esta licencia permite el uso, estudio, modificación y distribución del \textit{software}. Además obliga a que todas las modificaciones y actualizaciones sigan siendo de código abierto.
+    \item Licencia Apache: la licencia Apache permite el uso, modificación y distribución del \textit{software} siempre que se mantenga el aviso de derechos de autor, la exención de responsabilidad y la necesidad de proporcionar una copia de la licencia en cualquier distribución de la herramienta.
+    \item Licencia Creative Commons: esta licencia permite el uso del \textit{software} a los que la posean sin solicitar el permiso del autor.
+    \item Licencia Open Database: esta licencia permite a los usuarios el uso, modificación y distribución del \textit{software}.
+    \item Licencia de uso comercial: esta licencia permite a cualquier empleado de una empresa que la tenga el uso del \textit{software}. Esta licencia es de pago. 
+\end{itemize}
+
+\par
+
+En la tabla~\ref{tabla:licencias} podemos observar las herramientas y sus licencias.
+
+\begin{center}
+\begin{tabular}{ |l| l| } 
+ \hline
+ \textbf{Herramienta} & \textbf{Licencia} \\ 
+ \hline
+ Visual Studio Code & MIT License  \\ 
+ \hline
+ Python & Open source License  \\ 
+ \hline
+ MATLAB & Commercial Use License\\
+ \hline
+ matplotlib & BSD License  \\ 
+ \hline
+ seaborn & BSD License\\
+ \hline
+ NumPy & BSD License\\
+ \hline
+ Pandas & BSD License  \\ 
+ \hline
+ TensorFlow & Open source License  \\ 
+ \hline
+ OpenWeatherMap & OpenWeather end-user License~\cite{licencia:OpenWeather}\\
+ \hline
+ Weatherbit & Commercial Use License\\
+ \hline
+\end{tabular}
+\label{tabla:licencias}
+\end{center}
+
+\par
+
+En cuanto a los datos empleados en el proyecto, puesto que el conjunto de datos empleado es de propiedad privada, solo es válido para la investigación y el desarrollo de proyectos que permita el dueño de estos. Por lo tanto, los modelos entrenados en este proyecto solo se pueden emplear para el viñedo de donde proceden los datos.

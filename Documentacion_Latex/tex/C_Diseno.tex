@@ -1,0 +1,61 @@
+\apendice{Especificación de diseño}
+
+\section{Introducción}
+
+En este anexo se va a hablar del diseño de distintos apartados del proyecto.
+
+\section{Diseño de datos}
+
+A la hora de entrenar los distintos modelos de predicción de series temporales, es importante conocer la estructura del conjunto de datos a emplear. Dado que el conjunto de datos no es público, no se puede encontrar en ningún lugar a menos que se obtenga con permiso del propietario.
+
+\par
+
+Dado que se ha modificado el conjunto de datos a emplear para el entrenamiento de los modelos, se va a comentar el diseño del conjunto de datos final y sus características. El conjunto de datos empleado para el entrenamiento de los modelos tiene las siguientes características: 
+
+\begin{itemize}
+    \item 2987 datos u observaciones
+    \item 6 columnas o atributos
+    \item Los atributos son el mes, la hora, la temperatura y la humedad a baja y alta profundidad
+\end{itemize}
+
+A este conjunto de datos se le ha realizado un pequeño análisis exploratorio de datos, empleando una función proporcionada por la biblioteca de Python \textit{Pandas}. En la figura~\ref{fig:analisis_datos} se pueden observar algunos datos estadísticos del conjunto de datos empleado.
+
+\imagen{analisis_datos}{Datos estadísticos del conjunto de datos empleado}{1}
+
+Respecto al conjunto de datos de donde proviene el conjunto de datos empleado, es del archivo \texttt{SoloDatosValidos\_sensor3.csv}. Ese conjunto de datos tiene las siguientes características:
+
+\begin{itemize}
+    \item 68893 datos u observaciones
+    \item 16 columnas o atributos
+    \item Todos los atributos de este conjunto de datos son válidos y se pueden emplear todos los atributos.
+\end{itemize}
+
+Si se quisiera realizar un preprocesamiento de datos distinto, se recomienda realizarlo a partir del fichero \texttt{sensor3.csv}, que contiene todos los datos del sensor sin validar, o a partir del fichero \texttt{Datos\_Validados\_sensor3.csv}, que contiene todos los datos del sensor validados y con columnas adicionales indicando la validez de los datos.
+
+\section{Diseño procedimental}
+
+Para el desarrollo del proyecto se han realizado múltiples experimentos empleando distintos parámetros. Los distintos procedimientos realizados en este proyecto se pueden representar en diagramas de flujo donde se puede observar el flujo general seguido para estos.
+
+En el diagrama de flujo de la figura~\ref{fig:procedimiento} se puede observar el procedimiento seguido para la preparación del conjunto de datos.
+
+\imagen{procedimiento}{Diagrama de flujo de la preparación de los datos}{1}
+
+El proceso seguido para la preparación del conjunto de datos es simple: se cargan los datos, se reduce el conjunto si se desea para trabajar con una menor cantidad de datos, pero asegurarnos de que no hay ningún salto en los pasos de tiempo, eliminar atributos del conjunto de datos si consideramos que no son útiles para las predicciones, normalizamos los datos, dividimos el conjunto de datos en \textit{sets} de entrenamiento, validación y test y generamos secciones de datos para realizar predicciones de series temporales.
+
+Por otro lado, también es importante desarrollar el proceso seguido para el entrenamiento de los modelos, dicho proceso se puede ver en la figura~\ref{fig:proceso-entrenamiento}. Primero se han cargado los datos, se realiza el procedimiento para la preparación de los datos, se configuran los parámetros de entrenamiento para todos los modelos y se configuran los modelos. Si son modelos de un solo paso se entrena y se obtiene el error, en cambio, si son modelos de múltiples pasos se entrenan y se obtiene el error durante un número de iteraciones establecido en el código. Por último, calculamos la media de los errores en el caso de los modelos de múltiples pasos y mostramos los resultados para realizar la comparación.
+
+\imagen{proceso-entrenamiento}{Diagrama de flujo del proceso seguido para el entrenamiento de los modelos}{1}
+
+\section{Diseño arquitectónico}
+
+La arquitectura de este proyecto es bastante simple, puesto que se centra en la investigación y la comparación de modelos de predicción. Debido a ello, se ha empleado un modelo arquitectónico llamado patrón pizarra~\cite{pizarra}.
+
+\par
+
+Este modelo arquitectónico consta de múltiples elementos funcionales, llamados agentes, y un instrumento de control, llamado pizarra. Los agentes están especializados en resolver una tarea concreta, en este caso, un entrenamiento de un modelo de predicción. Además, todos ellos cooperan para alcanzar un objetivo común, que en este proyecto sería la comparación de distintos modelos para predicciones de series temporales. La pizarra es el elemento que nos permite la visualización de todos los agentes y realizar operaciones con todos ellos. En este proyecto, el elemento pizarra sería el fichero Jupyter Notebook en el que se han entrenado los modelos y hemos visualizado los resultados.
+
+\par
+
+Podemos observar en la figura~\ref{fig:pizarra} el diseño arquitectónico del proyecto. Se puede ver como los agentes son cada uno de los modelos que se han entrenado y el conjunto de datos empleado y la pizarra es el fichero donde se ha realizado todo el proceso.
+
+\imagen{pizarra}{Estructura arquitectónica del proyecto}{1}
